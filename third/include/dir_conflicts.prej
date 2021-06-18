@@ -1,12 +1,12 @@
 Trying to change property 'svn:externals'
 but the property has already been locally changed to a different value.
-freerdp https://repos.ca2.cc/shared/platform/third/include/freerdp
+freerdp https://repos.ca2.software/shared/platform/third/include/freerdp
 <<<<<<< (local property value)
-libmpg123 https://repos.ca2.cc/shared/platform/third/include/libmpg123
+libmpg123 https://repos.ca2.software/shared/platform/third/include/libmpg123
 ||||||| (incoming 'changed from' value)
 =======
-idn https://repos.ca2.cc/shared/platform/third/include/idn
+idn https://repos.ca2.software/shared/platform/third/include/idn
 >>>>>>> (incoming 'changed to' value)
-pcre https://repos.ca2.cc/shared/platform/third/include/pcre
-strophe https://repos.ca2.cc/shared/platform/third/include/strophe
-winpr https://repos.ca2.cc/shared/platform/third/include/winpr
+pcre https://repos.ca2.software/shared/platform/third/include/pcre
+strophe https://repos.ca2.software/shared/platform/third/include/strophe
+winpr https://repos.ca2.software/shared/platform/third/include/winpr
