@@ -14,7 +14,7 @@
 #define ZUTIL_H
 
 
-#include "platform/third_private_c.h"
+#include "operating_system/third_private_c.h"
 
 #ifdef HAVE_HIDDEN
 #  define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
