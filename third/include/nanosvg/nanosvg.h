@@ -572,16 +572,16 @@ static void nsvg__xformPremultiply(float* t, float* s)
    memcpy(t, s2, sizeof(float) * 6);
 }
 
-static void nsvg__xformPoint(float* dx, float* dy, float x, float y, float* t)
+static void nsvg__xformPoint(float* Δx, float* Δy, float x, float y, float* t)
 {
-   *dx = x * t[0] + y * t[2] + t[4];
-   *dy = x * t[1] + y * t[3] + t[5];
+   *Δx = x * t[0] + y * t[2] + t[4];
+   *Δy = x * t[1] + y * t[3] + t[5];
 }
 
-static void nsvg__xformVec(float* dx, float* dy, float x, float y, float* t)
+static void nsvg__xformVec(float* Δx, float* Δy, float x, float y, float* t)
 {
-   *dx = x * t[0] + y * t[2];
-   *dy = x * t[1] + y * t[3];
+   *Δx = x * t[0] + y * t[2];
+   *Δy = x * t[1] + y * t[3];
 }
 
 #define NSVG_EPSILON (1e-12)
@@ -770,15 +770,15 @@ static void nsvg__moveTo(NSVGparser* p, float x, float y)
 
 static void nsvg__lineTo(NSVGparser* p, float x, float y)
 {
-   float px, py, dx, dy;
+   float px, py, Δx, Δy;
    if (p->npts > 0)
    {
       px = p->pts[(p->npts - 1) * 2 + 0];
       py = p->pts[(p->npts - 1) * 2 + 1];
-      dx = x - px;
-      dy = y - py;
-      nsvg__addPoint(p, px + dx / 3.0f, py + dy / 3.0f);
-      nsvg__addPoint(p, x - dx / 3.0f, y - dy / 3.0f);
+      Δx = x - px;
+      Δy = y - py;
+      nsvg__addPoint(p, px + Δx / 3.0f, py + Δy / 3.0f);
+      nsvg__addPoint(p, x - Δx / 3.0f, y - Δy / 3.0f);
       nsvg__addPoint(p, x, y);
    }
 }
@@ -917,16 +917,16 @@ static NSVGgradient* nsvg__createGradient(NSVGparser* p, const char* id, const f
 
    if (data->type == NSVG_PAINT_LINEAR_GRADIENT)
    {
-      float x1, y1, x2, y2, dx, dy;
+      float x1, y1, x2, y2, Δx, Δy;
       x1 = nsvg__convertToPixels(p, data->linear.x1, ox, sw);
       y1 = nsvg__convertToPixels(p, data->linear.y1, oy, sh);
       x2 = nsvg__convertToPixels(p, data->linear.x2, ox, sw);
       y2 = nsvg__convertToPixels(p, data->linear.y2, oy, sh);
       // Calculate transform aligned to the line
-      dx = x2 - x1;
-      dy = y2 - y1;
-      grad->xform[0] = dy; grad->xform[1] = -dx;
-      grad->xform[2] = dx; grad->xform[3] = dy;
+      Δx = x2 - x1;
+      Δy = y2 - y1;
+      grad->xform[0] = Δy; grad->xform[1] = -Δx;
+      grad->xform[2] = Δx; grad->xform[3] = Δy;
       grad->xform[4] = x1; grad->xform[5] = y1;
    }
    else
@@ -2261,7 +2261,7 @@ static void nsvg__pathArcTo(NSVGparser* p, float* cpx, float* cpy, float* args, 
 {
    // Ported from canvg (https://code.google.com/p/canvg/)
    float rx, ry, rotx;
-   float x1, y1, x2, y2, cx, cy, dx, dy, d;
+   float x1, y1, x2, y2, cx, cy, Δx, Δy, d;
    float x1p, y1p, cxp, cyp, s, sa, sb;
    float ux, uy, vx, vy, a1, da;
    float x, y, tanx, tany, a, px = 0, py = 0, ptanx = 0, ptany = 0, t[6];
@@ -2288,9 +2288,9 @@ static void nsvg__pathArcTo(NSVGparser* p, float* cpx, float* cpy, float* args, 
       y2 = args[6];
    }
 
-   dx = x1 - x2;
-   dy = y1 - y2;
-   d = sqrtf(dx*dx + dy * dy);
+   Δx = x1 - x2;
+   Δy = y1 - y2;
+   d = sqrtf(Δx*Δx + Δy * Δy);
    if (d < 1e-6f || rx < 1e-6f || ry < 1e-6f)
    {
       // The arc degenerates to a line
@@ -2306,8 +2306,8 @@ static void nsvg__pathArcTo(NSVGparser* p, float* cpx, float* cpy, float* args, 
    // Convert to center point parameterization.
    // http://www.w3.org/TR/SVG11/implnote.html#ArcImplementationNotes
    // 1) Compute x1', y1'
-   x1p = cosrx * dx / 2.0f + sinrx * dy / 2.0f;
-   y1p = -sinrx * dx / 2.0f + cosrx * dy / 2.0f;
+   x1p = cosrx * Δx / 2.0f + sinrx * Δy / 2.0f;
+   y1p = -sinrx * Δx / 2.0f + cosrx * Δy / 2.0f;
    d = nsvg__sqr(x1p) / nsvg__sqr(rx) + nsvg__sqr(y1p) / nsvg__sqr(ry);
    if (d > 1)
    {
@@ -2363,10 +2363,10 @@ static void nsvg__pathArcTo(NSVGparser* p, float* cpx, float* cpy, float* args, 
    for (i = 0; i <= ndivs; i++)
    {
       a = a1 + da * ((float)i / (float)ndivs);
-      dx = cosf(a);
-      dy = sinf(a);
-      nsvg__xformPoint(&x, &y, dx*rx, dy*ry, t); // position
-      nsvg__xformVec(&tanx, &tany, -dy * rx * kappa, dx*ry * kappa, t); // tangent
+      Δx = cosf(a);
+      Δy = sinf(a);
+      nsvg__xformPoint(&x, &y, Δx*rx, Δy*ry, t); // position
+      nsvg__xformVec(&tanx, &tany, -Δy * rx * kappa, Δx*ry * kappa, t); // tangent
       if (i > 0)
          nsvg__cubicBezTo(p, px + ptanx, py + ptany, x - tanx, y - tany, x, y);
       px = x;

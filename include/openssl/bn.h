@@ -123,7 +123,7 @@ void *BN_GENCB_get_arg(BN_GENCB *cb);
  *
  * This table is generated using the algorithm of FIPS PUB 186-4
  * Digital Signature Standard (DSS), section F.1, page 117.
- * (https://dx.doi.org/10.6028/NIST.FIPS.186-4)
+ * (https://Δx.doi.org/10.6028/NIST.FIPS.186-4)
  *
  * The following magma script was used to generate the output:
  * securitybits:=125;

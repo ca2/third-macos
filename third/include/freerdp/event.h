@@ -44,13 +44,13 @@ extern "C"
 	DEFINE_EVENT_END(ResizeWindow)
 
 	DEFINE_EVENT_BEGIN(PanningChange)
-	int dx;
-	int dy;
+	int Δx;
+	int Δy;
 	DEFINE_EVENT_END(PanningChange)
 
 	DEFINE_EVENT_BEGIN(ZoomingChange)
-	int dx;
-	int dy;
+	int Δx;
+	int Δy;
 	DEFINE_EVENT_END(ZoomingChange)
 
 	DEFINE_EVENT_BEGIN(LocalResizeWindow)
