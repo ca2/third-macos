@@ -78,9 +78,9 @@ typedef enum
 } avc444_frame_type;
 
 /* Function prototypes for all of the supported primitives. */
-typedef pstatus_t (*__copy_t)(const void* pSrc, void* pDst, INT32 bytes);
-typedef pstatus_t (*__copy_8u_t)(const BYTE* pSrc, BYTE* pDst, INT32 len);
-typedef pstatus_t (*__copy_8u_AC4r_t)(const BYTE* pSrc, INT32 srcStep, /* bytes */
+typedef pstatus_t (*copy_t)(const void* pSrc, void* pDst, INT32 bytes);
+typedef pstatus_t (*copy_8u_t)(const BYTE* pSrc, BYTE* pDst, INT32 len);
+typedef pstatus_t (*copy_8u_AC4r_t)(const BYTE* pSrc, INT32 srcStep, /* bytes */
                                       BYTE* pDst, INT32 dstStep,       /* bytes */
                                       INT32 width, INT32 height);      /* pixels */
 typedef pstatus_t (*__set_8u_t)(BYTE val, BYTE* pDst, UINT32 len);
@@ -147,9 +147,9 @@ typedef pstatus_t (*primitives_uninit_t)(void);
 typedef struct
 {
 	/* Memory-to-memory copy routines */
-	__copy_t copy;                 /* memcpy/memmove, basically */
-	__copy_8u_t copy_8u;           /* more strongly typed */
-	__copy_8u_AC4r_t copy_8u_AC4r; /* pixel copy function */
+	copy_t copy;                 /* memcpy/memmove, basically */
+	copy_8u_t copy_8u;           /* more strongly typed */
+	copy_8u_AC4r_t copy_8u_AC4r; /* pixel copy function */
 	/* Memory setting routines */
 	__set_8u_t set_8u; /* memset, basically */
 	__set_32s_t set_32s;
